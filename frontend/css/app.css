@@ -1,0 +1,18 @@
+* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body { background-color: #f0f2f5; display: flex; justify-content: center; padding: 40px 20px; margin: 0; }
+#app { width: 100%; max-width: 600px; }
+.card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+h2 { margin-top: 0; color: #333; }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; color: #666; font-weight: bold; }
+input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+button { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.2s; }
+.btn-primary { background-color: #007bff; color: white; width: 100%; }
+.btn-primary:hover { background-color: #0056b3; }
+.btn-secondary { background-color: #6c757d; color: white; font-size: 14px; padding: 5px 10px; }
+.btn-success { background-color: #28a745; color: white; white-space: nowrap; }
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+.add-task { display: flex; gap: 10px; margin-bottom: 20px; }
+ul { list-style: none; padding: 0; }
+li { background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 5px; border-left: 4px solid #007bff; display: flex; justify-content: space-between; align-items: center; }
+.error-msg { color: #dc3545; text-align: center; margin-top: 15px; min-height: 20px; }
