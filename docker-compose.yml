@@ -1,16 +1,5 @@
 name: task-board-security
 
-# ─── Logging config template (ใช้ซ้ำในทุก service) ───
-x-logging: &loki-logging
-  driver: loki
-  options:
-    loki-url: "http://localhost:3100/loki/api/v1/push"
-    loki-external-labels: "compose_project=task-board-security,service={{.Name}}"
-    loki-retries: "5"
-    loki-batch-size: "400"
-    max-size: "10m"
-    max-file: "3"
-
 services:
   # ─────────── API Gateway ───────────
   nginx:
@@ -26,7 +15,6 @@ services:
       user-service: { condition: service_healthy }
     networks:
       - taskboard-net
-    logging: *loki-logging
 
   # ─────────── Auth Service ───────────
   auth-service:
@@ -44,7 +32,6 @@ services:
       auth-db: { condition: service_healthy }
     networks:
       - taskboard-net
-    logging: *loki-logging
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/auth/health || exit 1"]
       interval: 30s
@@ -86,7 +73,6 @@ services:
       task-db: { condition: service_healthy }
     networks:
       - taskboard-net
-    logging: *loki-logging
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3002/api/tasks/health || exit 1"]
       interval: 30s
@@ -128,7 +114,6 @@ services:
       user-db: { condition: service_healthy }
     networks:
       - taskboard-net
-    logging: *loki-logging
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:3003/api/users/health || exit 1"]
       interval: 30s

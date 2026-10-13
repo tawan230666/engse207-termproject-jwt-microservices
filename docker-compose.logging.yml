@@ -1,0 +1,27 @@
+# Optional: ship container logs to Loki so they appear in the Grafana dashboard.
+#
+# Requires the Loki Docker logging driver (one-time install):
+#   docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+#
+# Then start the stack with both files:
+#   docker compose -f docker-compose.yml -f docker-compose.logging.yml up -d --build
+
+x-logging: &loki-logging
+  driver: loki
+  options:
+    loki-url: "http://localhost:3100/loki/api/v1/push"
+    loki-external-labels: "compose_project=task-board-security,service={{.Name}}"
+    loki-retries: "5"
+    loki-batch-size: "400"
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  nginx:
+    logging: *loki-logging
+  auth-service:
+    logging: *loki-logging
+  task-service:
+    logging: *loki-logging
+  user-service:
+    logging: *loki-logging

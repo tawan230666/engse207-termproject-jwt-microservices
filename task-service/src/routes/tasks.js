@@ -4,6 +4,20 @@ const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+const STATUSES   = ['TODO', 'IN_PROGRESS', 'DONE'];
+const PRIORITIES = ['low', 'medium', 'high'];
+
+// Returns an error message, or null when the fields are valid.
+function validateTaskFields({ status, priority }) {
+  if (status !== undefined && !STATUSES.includes(status)) {
+    return `status ต้องเป็น ${STATUSES.join(', ')}`;
+  }
+  if (priority !== undefined && !PRIORITIES.includes(priority)) {
+    return `priority ต้องเป็น ${PRIORITIES.join(', ')}`;
+  }
+  return null;
+}
+
 // GET /api/tasks — ดู tasks (member เห็นของตัวเอง, admin เห็นทั้งหมด)
 router.get('/', requireAuth, async (req, res) => {
   try {
@@ -29,6 +43,8 @@ router.post('/', requireAuth, async (req, res) => {
   if (!title || title.trim() === '') {
     return res.status(400).json({ error: 'Title ห้ามว่าง' });
   }
+  const invalid = validateTaskFields(req.body);
+  if (invalid) return res.status(400).json({ error: invalid });
   try {
     const result = await pool.query(
       `INSERT INTO tasks (title, description, priority, owner_id, assignee_id) 
@@ -46,6 +62,8 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   const { title, description, status, priority, assignee_id } = req.body;
+  const invalid = validateTaskFields(req.body);
+  if (invalid) return res.status(400).json({ error: invalid });
   try {
     const checkResult = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
     if (!checkResult.rows[0]) {

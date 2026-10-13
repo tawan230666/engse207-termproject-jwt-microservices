@@ -5,6 +5,11 @@ const { generateToken, verifyToken } = require('../middleware/jwtUtils');
 
 const router = express.Router();
 
+// A real bcrypt hash used when the email doesn't exist, so a failed login
+// always costs one full bcrypt comparison. Without it, unknown emails would
+// be answered measurably faster, revealing which accounts exist.
+const DUMMY_HASH = bcrypt.hashSync('timing-attack-dummy-password', 10);
+
 router.post('/register', async (req, res) => {
   const { email, password, name } = req.body;
 
@@ -64,8 +69,7 @@ router.post('/login', async (req, res) => {
     );
     const user = result.rows[0];
 
-    const dummyHash = '$2b$10$invalidhashpadding000000000000000000000000000000000000';
-    const passwordHash = user ? user.password_hash : dummyHash;
+    const passwordHash = user ? user.password_hash : DUMMY_HASH;
     const isValid = await bcrypt.compare(password, passwordHash);
 
     if (!user || !isValid) {
