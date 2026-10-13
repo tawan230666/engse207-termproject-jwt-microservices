@@ -143,3 +143,5 @@ vite.config.ts.timestamp-*
 node_modules/
 *.log
 >>>>>>> master
+.DS_Store
+*Zone.Identifier
